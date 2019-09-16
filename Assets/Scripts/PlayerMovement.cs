@@ -2,9 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PlayerState
+{
+    walk,
+    attack,
+    interact
+}
+
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float speed;
+    public PlayerState currentState;
     private Rigidbody2D myRigidbody;
     private Vector3 change;
     private Animator animator;
@@ -22,7 +30,24 @@ public class PlayerMovement : MonoBehaviour
         change = Vector3.zero;
         change.x = Input.GetAxisRaw("Horizontal"); //GetAxisRaw only returns the values of 0, -1, 1. 
         change.y = Input.GetAxisRaw("Vertical");   //Good for digital movement (vs. GetAxis)
-        UpdateAnimationAndMove();
+        if (Input.GetButtonDown("attack") && currentState != PlayerState.attack)
+        {
+            StartCoroutine(AttackCo());
+        }
+        else if (currentState == PlayerState.walk)
+        {
+            UpdateAnimationAndMove();
+        }        
+    }
+
+    private IEnumerator AttackCo()
+    {
+        animator.SetBool("attacking", true);
+        currentState = PlayerState.attack;
+        yield return null;
+        animator.SetBool("attacking", false);
+        yield return new WaitForSeconds(.3f);
+        currentState = PlayerState.walk;
     }
 
     private void UpdateAnimationAndMove()

@@ -19,6 +19,8 @@ public class Sign : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //TODO: improve input
+        //TODO: consider scriptable objects for signs
         if (Input.GetKeyDown(KeyCode.Space) && playerInRange)
         {
             if (dialogBox.activeInHierarchy)
